@@ -22,7 +22,7 @@ class Product extends Model
             $slug = $base;
             $suffix = 2;
             while (static::where('slug', $slug)->exists()) {
-                $slug = $base.'-'.$suffix++;
+                $slug = $base . '-' . $suffix++;
             }
             $product->slug = $slug;
         });
@@ -33,13 +33,17 @@ class Product extends Model
         return config('filesystems.products_disk', 'public');
     }
 
-    public function imageUrl(): string
+    public function imageUrl(): ?string
     {
+        if (blank($this->image_path)) {
+            return null;
+        }
+
         return Storage::disk(static::disk())->url($this->image_path);
     }
 
     public function formattedPrice(bool $original = false): string
     {
-        return 'Rp'.number_format($original ? $this->price : ($this->discount_price ?? $this->price), 0, ',', '.');
+        return 'Rp' . number_format($original ? $this->price : ($this->discount_price ?? $this->price), 0, ',', '.');
     }
 }

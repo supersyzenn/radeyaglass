@@ -26,10 +26,10 @@ class ProductController extends Controller
     public function store(ProductRequest $request): RedirectResponse
     {
         $disk = Product::disk();
-        $path = $request->file('image')->store('products', $disk);
+        $path = $request->file('image')->store('products', 's3');
         abort_unless($path, 500, 'Foto belum berhasil disimpan. Silakan coba kembali.');
         try {
-            DB::transaction(fn () => Product::create([...$request->safe()->except('image'), 'image_path' => $path]));
+            DB::transaction(fn() => Product::create([...$request->safe()->except('image'), 'image_path' => $path]));
         } catch (Throwable $exception) {
             Storage::disk($disk)->delete($path);
             throw $exception;
@@ -55,7 +55,7 @@ class ProductController extends Controller
             $data['image_path'] = $newPath;
         }
         try {
-            DB::transaction(fn () => $product->update($data));
+            DB::transaction(fn() => $product->update($data));
         } catch (Throwable $exception) {
             if ($newPath) {
                 Storage::disk($disk)->delete($newPath);
@@ -72,7 +72,7 @@ class ProductController extends Controller
     public function destroy(Product $product): RedirectResponse
     {
         $path = $product->image_path;
-        DB::transaction(fn () => $product->delete());
+        DB::transaction(fn() => $product->delete());
         $this->deleteUnusedPhoto($path);
 
         return redirect()->route('admin.products.index')->with('status', 'Produk berhasil dihapus.');
