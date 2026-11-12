@@ -1,0 +1,11 @@
+{
+  "name": "radeya-glass-catalog",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-assets.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

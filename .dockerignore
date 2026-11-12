@@ -1,0 +1,12 @@
+.git
+.github
+.env
+.env.backup
+vendor
+node_modules
+docs
+*.sqlite
+.phpunit.result.cache
+storage/app/public/products/*
+!storage/app/public/products/.gitkeep
+

@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+if [ -x /opt/homebrew/opt/php@8.5/bin/php ]; then
+    exec /opt/homebrew/opt/php@8.5/bin/php "$@"
+fi
+exec php "$@"

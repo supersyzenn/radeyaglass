@@ -1,0 +1,5 @@
+@extends('layouts.store')
+@section('title', $product->name)
+@section('content')
+<section class="container section"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="{{ route('catalog.index') }}">Produk</a><span>/</span><span>{{ $product->name }}</span></nav><div class="product-detail"><div class="detail-image" data-reveal><img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" width="800" height="800"></div><div class="detail-content" data-reveal><span class="eyebrow blue">KATALOG RADEYA</span><h1>{{ $product->name }}</h1><x-price :product="$product" /><div class="detail-description"><h2>Keterangan produk</h2><p>{{ $product->description }}</p></div><a class="button button-wide" href="{{ $store->whatsappUrl($product) ?? route('store.contact') }}" @if($store->whatsappUrl()) target="_blank" rel="noopener noreferrer" @endif><x-icon name="whatsapp" /> Tanya & Pesan via WhatsApp <x-icon /></a><p class="helper">Pemesanan dan pembayaran dilakukan langsung bersama toko melalui WhatsApp.</p><a class="back-link" href="{{ route('catalog.index') }}#produk">← Kembali ke katalog</a></div></div></section>
+@endsection
