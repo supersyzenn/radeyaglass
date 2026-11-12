@@ -4,3 +4,4 @@ if [ -x /opt/homebrew/opt/php@8.5/bin/php ]; then
     export PATH="/opt/homebrew/opt/php@8.5/bin:$PATH"
 fi
 exec composer "$@"
+
