@@ -25,12 +25,13 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request): RedirectResponse
     {
-        $path = $request->file('image')->store('products', 'public');
+        $disk = Product::disk();
+        $path = $request->file('image')->store('products', $disk);
         abort_unless($path, 500, 'Foto belum berhasil disimpan. Silakan coba kembali.');
         try {
             DB::transaction(fn () => Product::create([...$request->safe()->except('image'), 'image_path' => $path]));
         } catch (Throwable $exception) {
-            Storage::disk('public')->delete($path);
+            Storage::disk($disk)->delete($path);
             throw $exception;
         }
 
@@ -44,11 +45,12 @@ class ProductController extends Controller
 
     public function update(ProductRequest $request, Product $product): RedirectResponse
     {
+        $disk = Product::disk();
         $data = $request->safe()->except('image');
         $oldPath = $product->image_path;
         $newPath = null;
         if ($request->hasFile('image')) {
-            $newPath = $request->file('image')->store('products', 'public');
+            $newPath = $request->file('image')->store('products', $disk);
             abort_unless($newPath, 500, 'Foto belum berhasil disimpan. Silakan coba kembali.');
             $data['image_path'] = $newPath;
         }
@@ -56,7 +58,7 @@ class ProductController extends Controller
             DB::transaction(fn () => $product->update($data));
         } catch (Throwable $exception) {
             if ($newPath) {
-                Storage::disk('public')->delete($newPath);
+                Storage::disk($disk)->delete($newPath);
             }
             throw $exception;
         }
@@ -79,7 +81,7 @@ class ProductController extends Controller
     private function deleteUnusedPhoto(string $path): void
     {
         if (str_starts_with($path, 'products/') && ! Product::where('image_path', $path)->exists()) {
-            Storage::disk('public')->delete($path);
+            Storage::disk(Product::disk())->delete($path);
         }
     }
 }

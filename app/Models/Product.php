@@ -28,9 +28,14 @@ class Product extends Model
         });
     }
 
+    public static function disk(): string
+    {
+        return config('filesystems.products_disk', 'public');
+    }
+
     public function imageUrl(): string
     {
-        return Storage::disk('public')->url($this->image_path);
+        return Storage::disk(static::disk())->url($this->image_path);
     }
 
     public function formattedPrice(bool $original = false): string
